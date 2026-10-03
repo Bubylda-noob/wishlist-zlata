@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MY WISHLIST</title>
+  <meta name="description" content="Мой список желаний">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="sticker sticker-star gold">★</div>
+  <div class="sticker sticker-star pink">★</div>
+  <div class="sticker sticker-star blue">★</div>
+  <div class="sticker sticker-star black">★</div>
+  <div class="sticker sticker-heart">♥</div>
+  <div class="doodle doodle-1">✦</div>
+  <div class="doodle doodle-2">✧</div>
+
+  <header class="hero">
+    <div class="mini-label">my little collection</div>
+    <h1>MY WISHLIST</h1>
+    <p>things I would love to have</p>
+  </header>
+
+  <main class="container">
+    <section class="toolbar">
+      <div>
+        <span class="toolbar-title">MY WISHES</span>
+        <span id="counter" class="counter">0 items</span>
+      </div>
+      <button id="openAdd" class="add-button" type="button">＋ ADD WISH</button>
+    </section>
+
+    <div id="status" class="status" aria-live="polite"></div>
+    <section id="wishlist" class="wishlist-grid"></section>
+
+    <div id="emptyState" class="empty-state">
+      <div class="empty-star">☆</div>
+      <h2>Nothing here yet</h2>
+      <p>Add your first wish and build your own little collection.</p>
+      <button id="openAddEmpty" class="add-button" type="button">＋ ADD FIRST WISH</button>
+    </div>
+  </main>
+
+  <div id="modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" id="closeModalBackdrop"></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button id="closeModal" class="close-button" type="button" aria-label="Закрыть">×</button>
+      <div class="modal-decoration">★</div>
+      <h2 id="modalTitle">ADD A WISH</h2>
+      <p class="modal-subtitle">Добавь товар вручную — без автоматического сбора данных с магазина.</p>
+
+      <form id="wishForm">
+        <label>
+          Название товара
+          <input id="title" name="title" type="text" maxlength="120" required placeholder="Например: розовая сумка">
+        </label>
+
+        <label>
+          Ссылка на товар
+          <input id="productUrl" name="productUrl" type="url" maxlength="1000" required placeholder="https://...">
+        </label>
+
+        <label>
+          Фото товара
+          <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required>
+          <small>JPG, PNG, WEBP или GIF. Фото будет сохранено в Supabase Storage.</small>
+        </label>
+
+        <label>
+          Описание
+          <textarea id="description" name="description" maxlength="1000" rows="4" placeholder="Что это за вещь?"></textarea>
+        </label>
+
+        <label>
+          Цена, BYN
+          <input id="price" name="price" type="number" min="0" max="99999999" step="0.01" placeholder="0.00">
+        </label>
+
+        <div id="formError" class="form-error"></div>
+
+        <button id="submitWish" class="submit-button" type="submit">
+          <span>ADD TO WISHLIST</span>
+        </button>
+      </form>
+    </section>
+  </div>
+
+  <template id="wishTemplate">
+    <article class="wish-card">
+      <div class="card-image-wrap">
+        <img class="wish-image" alt="">
+        <div class="reserved-sticker">RESERVED</div>
+        <button class="delete-button" type="button" title="Удалить товар" aria-label="Удалить товар">×</button>
+      </div>
+      <div class="card-body">
+        <div class="card-topline">
+          <span class="item-number"></span>
+          <span class="price"></span>
+        </div>
+        <h3 class="wish-title"></h3>
+        <p class="wish-description"></p>
+        <div class="card-actions">
+          <a class="product-link" target="_blank" rel="noopener noreferrer">VIEW PRODUCT ↗</a>
+          <button class="reserve-button" type="button"></button>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <footer>
+    <span>made with ★</span>
+    <span>MY WISHLIST</span>
+    <span>shared online</span>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
