@@ -4,94 +4,137 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MY WISHLIST</title>
-  <meta name="description" content="Мой список желаний">
+  <meta name="description" content="MY WISHLIST — shared wishlist">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="sticker sticker-star gold">★</div>
-  <div class="sticker sticker-star pink">★</div>
-  <div class="sticker sticker-star blue">★</div>
-  <div class="sticker sticker-star black">★</div>
-  <div class="sticker sticker-heart">♥</div>
-  <div class="doodle doodle-1">✦</div>
-  <div class="doodle doodle-2">✧</div>
-
-  <header class="hero">
-    <div class="mini-label">my little collection</div>
-    <h1>MY WISHLIST</h1>
-    <p>things I would love to have</p>
-  </header>
-
-  <main class="container">
-    <section class="toolbar">
-      <div>
-        <span class="toolbar-title">MY WISHES</span>
-        <span id="counter" class="counter">0 items</span>
-      </div>
-      <button id="openAdd" class="add-button" type="button">＋ ADD WISH</button>
-    </section>
-
-    <div id="status" class="status" aria-live="polite"></div>
-    <section id="wishlist" class="wishlist-grid"></section>
-
-    <div id="emptyState" class="empty-state">
-      <div class="empty-star">☆</div>
-      <h2>Nothing here yet</h2>
-      <p>Add your first wish and build your own little collection.</p>
-      <button id="openAddEmpty" class="add-button" type="button">＋ ADD FIRST WISH</button>
+  <!-- START SCREEN -->
+  <section id="splash" class="splash" aria-label="MY WISHLIST">
+    <div class="splash-noise"></div>
+    <div class="splash-star splash-star-a">★</div>
+    <div class="splash-star splash-star-b">★</div>
+    <div class="splash-star splash-star-c">★</div>
+    <div class="splash-doodle">✦</div>
+    <div class="splash-content">
+      <div class="sticker-label">a little collection of wishes</div>
+      <h1>MY<br><span>WISHLIST</span></h1>
+      <p>things I would love to have</p>
+      <button id="enterWishlist" class="enter-button" type="button">
+        <span>ENTER</span><b>→</b>
+      </button>
     </div>
-  </main>
+    <div class="splash-bottom">scrolling through dreams / 2026</div>
+  </section>
 
-  <div id="modal" class="modal hidden" aria-hidden="true">
-    <div class="modal-backdrop" id="closeModalBackdrop"></div>
-    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <button id="closeModal" class="close-button" type="button" aria-label="Закрыть">×</button>
-      <div class="modal-decoration">★</div>
-      <h2 id="modalTitle">ADD A WISH</h2>
-      <p class="modal-subtitle">Добавь товар вручную — без автоматического сбора данных с магазина.</p>
+  <div id="app" class="app hidden-app">
+    <div class="background-star star-one">★</div>
+    <div class="background-star star-two">★</div>
+    <div class="background-star star-three">✦</div>
+    <div class="background-star star-four">★</div>
+
+    <header class="hero">
+      <div class="mini-label">my little collection</div>
+      <h1>MY WISHLIST</h1>
+      <p>things I would love to have</p>
+      <div class="hero-line"><span></span><b>★</b><span></span></div>
+    </header>
+
+    <main class="container">
+      <section class="toolbar">
+        <div class="toolbar-info">
+          <span class="toolbar-title">MY WISHES</span>
+          <span id="counter" class="counter">0 items</span>
+        </div>
+        <div class="toolbar-actions">
+          <button id="openAdd" class="add-button" type="button">
+            <span class="plus-mark">＋</span>
+            <span>ДОБАВИТЬ ЖЕЛАНИЕ</span>
+          </button>
+        </div>
+      </section>
+
+      <div id="status" class="status" aria-live="polite"></div>
+      <section id="wishlist" class="wishlist-grid" aria-label="Список желаний"></section>
+
+      <div id="emptyState" class="empty-state">
+        <div class="empty-star">☆</div>
+        <h2>Nothing here yet</h2>
+        <p>Добавь первое желание — и здесь появится твоя маленькая коллекция.</p>
+        <button id="openAddEmpty" class="add-button" type="button"><span class="plus-mark">＋</span> ДОБАВИТЬ ЖЕЛАНИЕ</button>
+      </div>
+    </main>
+
+    <footer>
+      <span>made with ★</span>
+      <span>MY WISHLIST</span>
+      <span>shared online</span>
+    </footer>
+  </div>
+
+  <!-- ADD WISH MODAL -->
+  <div id="addModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="add"></div>
+    <section class="modal-card add-modal-card" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+      <button class="close-button" data-close="add" type="button" aria-label="Закрыть">×</button>
+      <div class="modal-decoration pink-star">★</div>
+      <h2 id="addTitle">ADD A WISH</h2>
+      <p class="modal-subtitle">Всё добавляется вручную. Просто вставь адрес картинки — загружать файл не нужно.</p>
 
       <form id="wishForm">
-        <label>
-          Название товара
-          <input id="title" name="title" type="text" maxlength="120" required placeholder="Например: розовая сумка">
+        <label>Название товара
+          <input id="title" type="text" maxlength="120" required placeholder="Например: розовая сумка">
         </label>
-
-        <label>
-          Ссылка на товар
-          <input id="productUrl" name="productUrl" type="url" maxlength="1000" required placeholder="https://...">
+        <label>Ссылка на товар
+          <input id="productUrl" type="url" maxlength="1000" required placeholder="https://ozon.by/...">
         </label>
-
-        <label>
-          Фото товара
-          <input id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required>
-          <small>JPG, PNG, WEBP или GIF. Фото будет сохранено в Supabase Storage.</small>
+        <label>Адрес изображения
+          <input id="imageUrl" type="url" maxlength="2000" required placeholder="https://site.com/image.jpg">
+          <small>Нужна прямая ссылка на изображение, которая заканчивается вроде .jpg / .png / .webp или ведёт прямо на картинку.</small>
         </label>
-
-        <label>
-          Описание
-          <textarea id="description" name="description" maxlength="1000" rows="4" placeholder="Что это за вещь?"></textarea>
+        <label>Описание
+          <textarea id="description" maxlength="1200" rows="4" placeholder="Что это за вещь?"></textarea>
         </label>
-
-        <label>
-          Цена, BYN
-          <input id="price" name="price" type="number" min="0" max="99999999" step="0.01" placeholder="0.00">
+        <label>Цена, BYN
+          <input id="price" type="number" min="0" max="99999999" step="0.01" placeholder="0.00">
         </label>
-
         <div id="formError" class="form-error"></div>
-
-        <button id="submitWish" class="submit-button" type="submit">
-          <span>ADD TO WISHLIST</span>
-        </button>
+        <button id="submitWish" class="submit-button" type="submit"><span>ADD TO WISHLIST</span><b>→</b></button>
       </form>
     </section>
   </div>
 
+  <!-- DETAIL MODAL -->
+  <div id="detailModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close="detail"></div>
+    <section class="detail-card" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+      <button class="close-button" data-close="detail" type="button" aria-label="Закрыть">×</button>
+      <div class="detail-image-wrap">
+        <img id="detailImage" alt="">
+        <div id="detailReserved" class="reserved-badge large"><span>★</span> RESERVED</div>
+      </div>
+      <div class="detail-content">
+        <div class="detail-kicker">WISH DETAILS</div>
+        <h2 id="detailTitle"></h2>
+        <div id="detailPrice" class="detail-price"></div>
+        <p id="detailDescription"></p>
+        <div class="detail-actions">
+          <a id="detailProductLink" class="view-product" target="_blank" rel="noopener noreferrer">OPEN PRODUCT ↗</a>
+          <button id="detailReserve" class="reserve-button detail-reserve" type="button"></button>
+        </div>
+      </div>
+    </section>
+  </div>
+
   <template id="wishTemplate">
-    <article class="wish-card">
+    <article class="wish-card" tabindex="0">
       <div class="card-image-wrap">
         <img class="wish-image" alt="">
-        <div class="reserved-sticker">RESERVED</div>
+        <div class="reserved-badge"><span>★</span> RESERVED</div>
         <button class="delete-button" type="button" title="Удалить товар" aria-label="Удалить товар">×</button>
+        <div class="tap-hint">VIEW ↗</div>
       </div>
       <div class="card-body">
         <div class="card-topline">
@@ -101,18 +144,12 @@
         <h3 class="wish-title"></h3>
         <p class="wish-description"></p>
         <div class="card-actions">
-          <a class="product-link" target="_blank" rel="noopener noreferrer">VIEW PRODUCT ↗</a>
+          <button class="open-detail" type="button">MORE DETAILS ↗</button>
           <button class="reserve-button" type="button"></button>
         </div>
       </div>
     </article>
   </template>
-
-  <footer>
-    <span>made with ★</span>
-    <span>MY WISHLIST</span>
-    <span>shared online</span>
-  </footer>
 
   <script type="module" src="app.js"></script>
 </body>

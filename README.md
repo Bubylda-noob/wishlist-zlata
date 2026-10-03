@@ -1,58 +1,83 @@
-# MY WISHLIST
+# MY WISHLIST — GitHub Pages + Supabase
 
-A small public wishlist built with plain HTML/CSS/JavaScript + Supabase.
+A shared wishlist with a collage/sticker-inspired design.
 
 ## Features
 
-- collage/sticker-inspired design
+- animated/visual start screen
 - `MY WISHLIST` header
+- purple, pink, blue and yellow sticker aesthetic
 - manual product creation
 - product URL
-- uploaded product image
+- image URL (no file upload)
 - description
 - price in BYN
+- click a card to open a large detail view
+- visual `RESERVED` badge
 - reserve / unreserve
-- delete item
-- shared PostgreSQL database
-- Supabase Storage for images
-- Realtime updates between visitors
+- delete wishes
+- shared Supabase PostgreSQL database
+- Supabase Realtime updates between visitors
 - no localStorage database
+- no owner/admin login
 
-## Files
+## Important
 
-- `index.html` — page structure
-- `style.css` — design
-- `app.js` — Supabase connection and all logic
-- `supabase.sql` — database + RLS + Storage setup
+This version intentionally allows ANY visitor to:
+
+- add wishes
+- reserve/unreserve wishes
+- delete wishes
+
+Do not use this exact permission model if the wishlist needs private/admin-only editing.
 
 ## Setup
 
-1. Create a Supabase project.
-2. Open SQL Editor and run `supabase.sql`.
-3. Open Supabase Settings -> API.
-4. Copy Project URL and Publishable key.
-5. Paste them into `app.js`:
-   - `SUPABASE_URL`
-   - `SUPABASE_KEY`
-6. Create a GitHub repository and upload all project files.
-7. Enable GitHub Pages:
-   Settings -> Pages -> Deploy from a branch -> main -> /(root).
-8. Open the generated GitHub Pages URL.
+1. Create/open a Supabase project.
+2. Open Supabase -> SQL Editor.
+3. Run `supabase.sql`.
+4. Open Supabase -> Settings -> API.
+5. Copy Project URL and Publishable key.
+6. Paste them into `app.js`:
 
-### Important security note
+```js
+const SUPABASE_URL = "YOUR_PROJECT_URL";
+const SUPABASE_KEY = "YOUR_PUBLISHABLE_KEY";
+```
 
-This version intentionally allows anonymous visitors to add, reserve, unreserve and delete wishlist items, because the requested site does not use accounts.
+Do NOT use a `service_role` key.
 
-If later you want only the owner to be able to add/delete items while everyone can reserve them, add Supabase Auth and tighten the RLS policies. Do not put a Supabase `service_role` key into this project.
+7. Create a GitHub repository.
+8. Upload `index.html`, `style.css`, `app.js`, `supabase.sql`, and `README.md` to the root of the repository.
+9. Open GitHub -> repository Settings -> Pages.
+10. Select `Deploy from a branch`, then `main` and `/ (root)`.
+11. Save and open the generated GitHub Pages URL.
 
-## Testing
+## Adding a product
 
-Open the site in two different browser windows/devices.
+Click `ДОБАВИТЬ ЖЕЛАНИЕ` and enter:
 
-1. Add a wish in window A.
-2. It should appear in window B.
-3. Reserve it in window B.
-4. The RESERVED sticker should appear in window A.
-5. Delete it in either window and it should disappear from both.
+- title
+- product URL
+- direct image URL
+- description
+- price in BYN
 
-If updates do not appear automatically, check that `public.wishes` is enabled for Realtime in Supabase.
+For the image field, use a URL that directly returns the image. For example:
+
+`https://example.com/photo.jpg`
+
+A normal product-page URL is not necessarily an image URL.
+
+## Testing shared data
+
+Open the GitHub Pages site in two different browsers/devices.
+
+1. Add a wish in browser A.
+2. It should appear in browser B.
+3. Reserve it in browser B.
+4. The RESERVED badge should appear in browser A.
+5. Delete it in either browser.
+6. It should disappear from both.
+
+If live changes do not appear automatically, check that `public.wishes` is enabled for Realtime in Supabase.
