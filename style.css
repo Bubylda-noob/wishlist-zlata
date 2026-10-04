@@ -8,3 +8,42 @@
 @media(max-width:580px){.hero{padding-top:25px}.hero h1{font-size:clamp(42px,15vw,72px);text-shadow:3px 3px 0 #d9b8ff,5px 5px 0 #111}.toolbar{align-items:stretch;flex-direction:column}.add-button{width:100%;justify-content:center}.wishlist-grid{grid-template-columns:1fr;gap:22px}.wish-card{transform:none!important}.modal-card{padding:22px 18px}.splash h1{font-size:clamp(58px,19vw,100px);text-shadow:4px 4px 0 #ef5fa8,7px 7px 0 #111}.splash h1 span{-webkit-text-stroke:2px #111}footer{flex-direction:column;text-align:center}}
 
 .splash-hide{opacity:0;visibility:hidden;transition:opacity .55s,visibility .55s}.splash-hide .splash-content{transform:scale(.96);transition:transform .55s}.splash-content{transition:transform .55s}
+
+.hidden { display: none !important; }
+
+.image-methods {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 10px;
+}
+
+.method-option {
+  position: relative;
+  margin: 0 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  cursor: pointer;
+}
+
+.method-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.method-option span {
+  display: block;
+  padding: 9px 12px;
+  border: 2px solid var(--line);
+  background: #fff;
+  font: 800 10px Montserrat, sans-serif;
+  cursor: pointer;
+}
+
+.method-option input:checked + span {
+  background: var(--lavender);
+  box-shadow: 3px 3px 0 var(--line);
+  transform: translate(-1px, -1px);
+}
+
+.image-input-box small { display: block; margin-top: 7px; }

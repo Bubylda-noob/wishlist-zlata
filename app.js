@@ -22,6 +22,11 @@ const detailModal = document.querySelector("#detailModal");
 const form = document.querySelector("#wishForm");
 const formError = document.querySelector("#formError");
 const submitWish = document.querySelector("#submitWish");
+const imageMethodInputs = document.querySelectorAll('input[name="imageMethod"]');
+const imageUrlBox = document.querySelector("#imageUrlBox");
+const imageFileBox = document.querySelector("#imageFileBox");
+const imageUrlInput = document.querySelector("#imageUrl");
+const imageFileInput = document.querySelector("#imageFile");
 
 let wishes = [];
 let currentDetailWish = null;
@@ -39,7 +44,7 @@ function openModal(modal) {
 function closeModal(modal) {
   modal.classList.add("hidden");
   modal.setAttribute("aria-hidden", "true");
-  if ([addModal, detailModal, loginModal].every(m => m.classList.contains("hidden"))) document.body.style.overflow = "";
+  if ([addModal, detailModal].every(m => m.classList.contains("hidden"))) document.body.style.overflow = "";
 }
 
 document.querySelectorAll("[data-close]").forEach(btn => btn.addEventListener("click", () => {
@@ -59,7 +64,7 @@ openAddEmpty.addEventListener("click", () => openModal(addModal));
 
 window.addEventListener("keydown", event => {
   if (event.key !== "Escape") return;
-  [addModal, detailModal, loginModal].forEach(modal => {
+  [addModal, detailModal].forEach(modal => {
     if (!modal.classList.contains("hidden")) closeModal(modal);
   });
 });
@@ -125,8 +130,32 @@ async function loadWishes() {
 }
 
 
-async function uploadNothing() {
-  // Images are stored as external URLs. No local file upload is used.
+
+function updateImageMethod() {
+  const method = document.querySelector('input[name="imageMethod"]:checked')?.value || "url";
+  const useUrl = method === "url";
+  imageUrlBox.classList.toggle("hidden", !useUrl);
+  imageFileBox.classList.toggle("hidden", useUrl);
+  imageUrlInput.required = useUrl;
+  imageFileInput.required = !useUrl;
+}
+
+imageMethodInputs.forEach(input => input.addEventListener("change", updateImageMethod));
+updateImageMethod();
+
+async function uploadImage(file) {
+  if (!file) throw new Error("Выбери изображение.");
+  const allowed = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+  if (!allowed.includes(file.type)) throw new Error("Разрешены JPG, PNG, WEBP и GIF.");
+  if (file.size > 8 * 1024 * 1024) throw new Error("Фото слишком большое. Максимальный размер — 8 МБ.");
+  const extension = file.name.split(".").pop().toLowerCase() || "jpg";
+  const path = `${crypto.randomUUID()}.${extension}`;
+  const { error } = await supabase.storage.from("wishlist-images").upload(path, file, {
+    cacheControl: "3600", upsert: false, contentType: file.type
+  });
+  if (error) throw error;
+  const { data } = supabase.storage.from("wishlist-images").getPublicUrl(path);
+  return { url: data.publicUrl, path };
 }
 
 form.addEventListener("submit", async event => {
@@ -138,16 +167,29 @@ form.addEventListener("submit", async event => {
   try {
     const title = document.querySelector("#title").value.trim();
     const productUrl = document.querySelector("#productUrl").value.trim();
-    const imageUrl = document.querySelector("#imageUrl").value.trim();
+    const imageMethod = document.querySelector('input[name="imageMethod"]:checked')?.value || "url";
+    const imageUrl = imageUrlInput.value.trim();
+    const imageFile = imageFileInput.files[0];
     const description = document.querySelector("#description").value.trim();
     const priceRaw = document.querySelector("#price").value;
     if (!title) throw new Error("Укажи название товара.");
     if (!/^https?:\/\//i.test(productUrl)) throw new Error("Ссылка на товар должна начинаться с http:// или https://");
-    if (!/^https?:\/\//i.test(imageUrl)) throw new Error("Адрес изображения должен начинаться с http:// или https://");
     const price = priceRaw === "" ? null : Number(priceRaw);
     if (price !== null && (!Number.isFinite(price) || price < 0)) throw new Error("Проверь цену.");
 
-    const { error } = await supabase.from("wishes").insert({ title, product_url: productUrl, image_url: imageUrl, image_path: null, description, price, reserved: false });
+    let finalImageUrl = imageUrl;
+    let imagePath = null;
+    let uploadedPath = null;
+    if (imageMethod === "url") {
+      if (!/^https?:\/\//i.test(imageUrl)) throw new Error("Адрес изображения должен начинаться с http:// или https://");
+    } else {
+      const uploaded = await uploadImage(imageFile);
+      finalImageUrl = uploaded.url;
+      imagePath = uploaded.path;
+      uploadedPath = uploaded.path;
+    }
+
+    const { error } = await supabase.from("wishes").insert({ title, product_url: productUrl, image_url: finalImageUrl, image_path: imagePath, description, price, reserved: false });
     if (error) throw error;
     form.reset();
     closeModal(addModal);
@@ -192,6 +234,10 @@ async function toggleReserved(wish) {
 
 async function deleteWish(wish) {
   if (!window.confirm(`Удалить «${wish.title}» из виш-листа?`)) return;
+  if (wish.image_path) {
+    const { error: storageError } = await supabase.storage.from("wishlist-images").remove([wish.image_path]);
+    if (storageError) console.warn("Не удалось удалить изображение из Storage:", storageError);
+  }
   const { error } = await supabase.from("wishes").delete().eq("id", wish.id);
   if (error) { setStatus(`Ошибка удаления: ${error.message}`, "error"); return; }
   closeModal(detailModal);

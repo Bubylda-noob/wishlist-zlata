@@ -81,7 +81,7 @@
       <button class="close-button" data-close="add" type="button" aria-label="Закрыть">×</button>
       <div class="modal-decoration pink-star">★</div>
       <h2 id="addTitle">ADD A WISH</h2>
-      <p class="modal-subtitle">Всё добавляется вручную. Просто вставь адрес картинки — загружать файл не нужно.</p>
+      <p class="modal-subtitle">Выбери один из двух способов добавления фото: по ссылке или из галереи.</p>
 
       <form id="wishForm">
         <label>Название товара
@@ -90,9 +90,25 @@
         <label>Ссылка на товар
           <input id="productUrl" type="url" maxlength="1000" required placeholder="https://ozon.by/...">
         </label>
-        <label>Адрес изображения
-          <input id="imageUrl" type="url" maxlength="2000" required placeholder="https://site.com/image.jpg">
-          <small>Нужна прямая ссылка на изображение, которая заканчивается вроде .jpg / .png / .webp или ведёт прямо на картинку.</small>
+        <label>Фото товара
+          <div class="image-methods">
+            <label class="method-option">
+              <input type="radio" name="imageMethod" value="url" checked>
+              <span>ПО ССЫЛКЕ</span>
+            </label>
+            <label class="method-option">
+              <input type="radio" name="imageMethod" value="file">
+              <span>ИЗ ГАЛЕРЕИ</span>
+            </label>
+          </div>
+          <div id="imageUrlBox" class="image-input-box">
+            <input id="imageUrl" type="url" maxlength="2000" placeholder="https://site.com/image.jpg">
+            <small>Нужна прямая ссылка на изображение, а не ссылка на страницу товара.</small>
+          </div>
+          <div id="imageFileBox" class="image-input-box hidden">
+            <input id="imageFile" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+            <small>Можно выбрать фото из галереи телефона или файл на компьютере. Максимум 8 МБ.</small>
+          </div>
         </label>
         <label>Описание
           <textarea id="description" maxlength="1200" rows="4" placeholder="Что это за вещь?"></textarea>
